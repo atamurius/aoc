@@ -109,5 +109,23 @@ case object Day_6_Chronal_Coordinates extends Puzzle {
     inner.map(f.areaOf).max
   }
 
-  override def answer2: Answer = ???
+  def distance(a: Pos, b: Pos): Int = math.abs(a._1 - b._1) + math.abs(a._2 - b._2)
+
+  def countDistances(centers: Iterable[Pos], max: Int): Int = {
+    val maxX = centers.map(_._1).max
+    val maxY = centers.map(_._2).max
+    var count = 0
+    for (x <- 0 to maxX; y <- 0 to maxY) {
+      val dist = centers.foldLeft(0)(_ + distance(_, (x, y)))
+      if (dist < max) count += 1
+    }
+    count
+  }
+
+  countDistances(
+    centers = Seq((1, 1), (1, 6), (8, 3), (3, 4), (5, 5), (8, 9)),
+    max = 32
+  ) shouldBe 16
+
+  override def answer2: Answer = countDistances(_, max = 10000)
 }
