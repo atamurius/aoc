@@ -25,13 +25,15 @@ case object Day_10_The_Stars_Align extends Puzzle {
     val maxX = points.keys.map(_.x).max
     val maxY = points.keys.map(_.y).max
 
+    Disabled("-" * (maxX - minX + 1))
     for (y <- minY to maxY) {
       val line = for (x <- minX to maxX) yield points.getOrElse(V(x, y), Nil).size
       Disabled(line.map {
-        case 0 => "."
+        case 0 => " "
         case n => "#"
       }.mkString)
     }
+    Disabled("-" * (maxX - minX + 1))
   }
 
   private def tick(points: Input): Input = points.foldLeft[Input](Map.empty) {
