@@ -144,7 +144,7 @@ case object Day_11_Chronal_Charge extends Puzzle {
 
   override def input: Input = 7689
 
-  override def answer1: Answer = s => maxInArea(cellFuel(s))((0, 0), MaxPoint)
+  override def answer1: Answer = s => maxInArea(cellFuel(s))((0, 0), MaxPoint)._1
 
   override def answer2: Answer = s => Squares(300)(cellFuel(s)).maxSquare(300)._1
 }
