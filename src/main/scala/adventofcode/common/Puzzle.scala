@@ -29,7 +29,8 @@ trait Puzzle extends Product {
   object Disabled extends Print(34)
   object Answer extends Print(33, 1)
   object Success extends Print(32)
-  object Failure extends Print(31)
+  object Failure extends Print(31, 1)
+  object FailureDetails extends Print(31)
 
   def input: Input
 
@@ -57,11 +58,11 @@ trait Puzzle extends Product {
     try {
       val value = answer(input)
       val total = System.currentTimeMillis() - time
-      Answer(s"\t[*] Answer $id: $value (${format(total)})")
+      Answer(s"\t★ Answer $id: $value (${format(total)})")
     }
     catch {
       case _: NotImplementedError =>
-        Disabled(s"\t[?] Answer $id NOT IMPLEMENTED")
+        Disabled(s"\t❓ Answer $id NOT IMPLEMENTED")
     }
   }
 
@@ -78,17 +79,19 @@ trait Puzzle extends Product {
         .getOrElse("UNKNOWN")
       try {
         val actual = value
-        if (actual == expected) Success(s"\t[+] Test passed ${Disabled wrap s"at $line"}")
+        if (actual == expected) Success(s"\t✔ Test passed ${Disabled wrap s"at $line"}")
         else {
           failures = true
-          Failure(s"\t[-] Test failed at $line:\n\t - Expected: $expected\n\t - Actual: $actual")
+          Failure(s"\t✘ Test failed${Disabled wrap s" at $line"}:")
+          FailureDetails(s"\t - Expected: $expected\n\t - Actual: $actual")
         }
       } catch {
         case NonFatal(e) =>
           failures = true
           val out = new StringWriter
           e.printStackTrace(new PrintWriter(out))
-          Failure(s"\t[-] Test failed at $line:\n\t - Expected: $expected\n\t - Actual: $out")
+          Failure(s"\t✘ Test failed${Disabled wrap s" at $line:"}")
+          FailureDetails(s"\t - Expected: $expected\n\t - Actual: $out")
       }
     }
   }
