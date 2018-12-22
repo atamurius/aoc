@@ -27,6 +27,7 @@ trait Puzzle extends Product {
 
   object Title extends Print(1)
   object Disabled extends Print(34)
+  object Debug extends Print(36)
   object Answer extends Print(33, 1)
   object Success extends Print(32)
   object Failure extends Print(31, 1)
