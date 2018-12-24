@@ -19,8 +19,8 @@ trait Puzzle extends Product {
     }
   }
 
-  abstract class Print(color: Int*) extends (String => Unit) {
-    override def apply(msg: String): Unit = println(wrap(msg))
+  abstract class Print(color: Int*) extends (Any => Unit) {
+    override def apply(msg: Any): Unit = println(wrap(msg.toString))
 
     def wrap(msg: String) = s"\u001b[${color mkString ";"}m${msg}\u001b[0m"
   }
