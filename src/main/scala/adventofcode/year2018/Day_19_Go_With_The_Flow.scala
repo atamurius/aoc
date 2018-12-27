@@ -138,9 +138,11 @@ case object Day_19_Go_With_The_Flow extends Puzzle {
       this
     }
 
+    def ip: Int = memory(ipRegister)
+
     @inline
     final def executeNext(): Unit = {
-      val ip = memory(ipRegister)
+      val ip = this.ip
       if (ip < code.size) {
         memory(ipRegister) = endOfChunk(ip)
         val chunk = chunkFrom(ip)
@@ -154,8 +156,13 @@ case object Day_19_Go_With_The_Flow extends Puzzle {
       }
     }
 
+    def tick(): Unit = code.lift(ip).foreach { instr =>
+      memory(instr.result.reg) = instr(memory)
+      memory(ipRegister) += 1
+    }
+
     def debug: String = {
-      val next = code.lift(memory(ipRegister)).map { instr =>
+      val next = code.lift(ip).map { instr =>
         s"${Instr.display(instr, memory(ipRegister))}"
       }
       s"ip=${memory(ipRegister)} ${memory.mkString("[", ", ", "]")} ${next getOrElse ""}"
