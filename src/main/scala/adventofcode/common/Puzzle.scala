@@ -19,19 +19,13 @@ trait Puzzle extends Product {
     }
   }
 
-  abstract class Print(color: Int*) extends (Any => Unit) {
-    override def apply(msg: Any): Unit = println(wrap(msg.toString))
-
-    def wrap(msg: String) = s"\u001b[${color mkString ";"}m${msg}\u001b[0m"
-  }
-
-  object Title extends Print(1)
-  object Disabled extends Print(34)
-  object Debug extends Print(36)
-  object Answer extends Print(33, 1)
-  object Success extends Print(32)
-  object Failure extends Print(31, 1)
-  object FailureDetails extends Print(31)
+  final val Title = Color.Bold
+  final val Disabled = Color.Blue
+  final val Debug = Color.Navy
+  final val Answer = Color.Gold
+  final val Success = Color.Green
+  final val Failure = Color.RedBold
+  final val FailureDetails = Color.Red
 
   def input: Input
 
@@ -59,11 +53,11 @@ trait Puzzle extends Product {
     try {
       val value = answer(input)
       val total = System.currentTimeMillis() - time
-      Answer(s"\t★ Answer $id: $value (${format(total)})")
+      Answer(s" ★ Answer $id: $value (${format(total)})")
     }
     catch {
       case _: NotImplementedError =>
-        Disabled(s"\t❓ Answer $id NOT IMPLEMENTED")
+        Disabled(s" ❓ Answer $id NOT IMPLEMENTED")
     }
   }
 
@@ -80,19 +74,19 @@ trait Puzzle extends Product {
         .getOrElse("UNKNOWN")
       try {
         val actual = value
-        if (actual == expected) Success(s"\t✔ Test passed ${Disabled wrap s"at $line"}")
+        if (actual == expected) Success(s" ✔ Test passed ${Disabled wrap s"at $line"}")
         else {
           failures = true
-          Failure(s"\t✘ Test failed${Disabled wrap s" at $line"}:")
-          FailureDetails(s"\t - Expected: $expected\n\t - Actual: $actual")
+          Failure(s" ✘ Test failed${Disabled wrap s" at $line"}:")
+          FailureDetails(s" - Expected: $expected\n\t - Actual: $actual")
         }
       } catch {
         case NonFatal(e) =>
           failures = true
           val out = new StringWriter
           e.printStackTrace(new PrintWriter(out))
-          Failure(s"\t✘ Test failed${Disabled wrap s" at $line:"}")
-          FailureDetails(s"\t - Expected: $expected\n\t - Actual: $out")
+          Failure(s" ✘ Test failed${Disabled wrap s" at $line:"}")
+          FailureDetails(s" - Expected: $expected\n\t - Actual: $out")
       }
     }
   }
